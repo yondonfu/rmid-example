@@ -20,21 +20,24 @@ ffmpeg -i data/mini_bbb.mp4 -f framehash -hash sha256 -
 # Show frame hashes of mpegts file
 ffmpeg -i data/mini_bbb.ts -f framehash -hash sha256 -
 
-# Generate key pair and store private key in mykey
-go run main.go gen-key mykey
+# Build binary
+go build .
+
+# Generate key pair, store private key in mykey and print public key
+./rmid-example gen-key mykey
 
 # Generate root RMID for mp4 file
-go run main.go root-rmid data/mini_bbb.mp4
+./rmid-example root-rmid data/mini_bbb.mp4
 
 # Generate root RMID for mpegts file
-go run main.go root-rmid data/mini_bbb.ts
+./rmid-example root-rmid data/mini_bbb.ts
 
 # Sign frame hashes of mp4 file using private key in mykey and write to sigs.txt
-go run main.go sign-video data/mini_bbb.mp4 mykey > sigs.txt
+./rmid-example sign-video data/mini_bbb.mp4 mykey > sigs.txt
 
 # Verify signatures of frame hashes of mp4 file against public key
-go run main.go sign-video data/mini_bbb.ts <PUBLIC_KEY> sigs.txt
+./rmid-example sign-video data/mini_bbb.ts <PUBLIC_KEY> sigs.txt
 
 # Verify signatures of frame hashes of mpegts file against public key
-go run main.go sign-video data/mini_bbb.ts <PUBLIC_KEY> sigs.txt
+./rmid-example sign-video data/mini_bbb.ts <PUBLIC_KEY> sigs.txt
 ```

@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/ecdsa"
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/hex"
 	"os"
 	"os/exec"
@@ -27,14 +26,14 @@ func NewRawMediaNodeStream(file string) (*RawMediaNodeStream, error) {
 	return stream, nil
 }
 
-func (s *RawMediaNodeStream) RootHash() []byte {
-	// Just hash the entire list for now
-	// Could encode as MerkleDAG
-	h := sha256.New()
-	for _, hash := range s.hashes {
-		h.Write(hash)
+func (s *RawMediaNodeStream) RootHash() (string, error) {
+	dag := NewSimpleDAG(s.hashes)
+	link, err := dag.Save()
+	if err != nil {
+		return "", err
 	}
-	return h.Sum(nil)
+
+	return link.String(), nil
 }
 
 func (s *RawMediaNodeStream) Sign(priv *ecdsa.PrivateKey) ([][]byte, error) {

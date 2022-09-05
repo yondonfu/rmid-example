@@ -27,7 +27,12 @@ func RootRMID(file string) {
 		log.Fatal(err)
 	}
 
-	fmt.Println(hex.EncodeToString(s.RootHash()))
+	rootHash, err := s.RootHash()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(rootHash)
 }
 
 func SignVideo(file string, privFile string) {

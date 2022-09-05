@@ -1,14 +1,18 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-ipld-prime"
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/linking"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
+	"github.com/ipld/go-ipld-prime/node/basicnode"
 	"github.com/ipld/go-ipld-prime/node/bindnode"
 	"github.com/ipld/go-ipld-prime/storage/memstore"
+	"github.com/ipld/go-ipld-prime/traversal"
 )
 
 // Just import to register encoder for codec
@@ -83,4 +87,32 @@ func (dag *SimpleDAG) Save() (datamodel.Link, error) {
 	}
 
 	return next, nil
+}
+
+func (dag *SimpleDAG) PrintLinks(link datamodel.Link) error {
+	currLink := link
+
+	for currLink != nil {
+		fmt.Println(currLink)
+
+		np := basicnode.Prototype.Any
+		n, err := dag.lsys.Load(linking.LinkContext{}, currLink, np)
+		if err != nil {
+			return err
+		}
+
+		links, err := traversal.SelectLinks(n)
+		if err != nil {
+			return err
+		}
+
+		if len(links) > 0 {
+			// Assume only a single link
+			currLink = links[0]
+		} else {
+			currLink = nil
+		}
+	}
+
+	return nil
 }

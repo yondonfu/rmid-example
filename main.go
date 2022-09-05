@@ -32,7 +32,7 @@ func RootRMID(file string) {
 		log.Fatal(err)
 	}
 
-	fmt.Println(rootHash)
+	fmt.Printf("Root RMID: %s\n", rootHash)
 }
 
 func SignVideo(file string, privFile string) {

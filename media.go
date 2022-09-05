@@ -33,6 +33,10 @@ func (s *RawMediaNodeStream) RootHash() (string, error) {
 		return "", err
 	}
 
+	if err := dag.PrintLinks(link); err != nil {
+		return "", nil
+	}
+
 	return link.String(), nil
 }
 
